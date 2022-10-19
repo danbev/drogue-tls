@@ -53,11 +53,12 @@ in-toto-record stop -n update-version -k $private_key \
 
 echo "5) Run tests"
 cargo test -q --manifest-path=${project_name}/Cargo.toml --no-run
-in-toto-run -n run_tests -s -k $private_key -- cargo test \ 
+in-toto-run -n run_tests -s -k $private_key -- cargo test \
 	--manifest-path ${project_name}/Cargo.toml
 
 echo "6) Copy artifacts"
-cp *.link $private_key ${key_name}.pub ../artifacts
+printf "Copying the following link files to artifacts directory:\n`ls *.link`\n"
+cp *.link ${key_name}.pub ../artifacts
 
 popd > /dev/null
 
