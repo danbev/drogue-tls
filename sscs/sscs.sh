@@ -16,22 +16,23 @@ pushd ${workdir} > /dev/null
 # the identity of the user doing this.
 echo "1) Generating keypair named $key_name"
 in-toto-keygen $private_key
+#
 
 echo "2) Cloning $github_url"
-in-toto-run --step-name clone_project -k $private_key -- git clone $github_url
+in-toto-run -n clone_project -k $private_key --base-path $project_name --products Cargo.toml Cargo.lock examples README.md rustfmt.toml rust-toolchain.toml src tests -- git clone $github_url
 
 echo "3) Create new branch named version_update_branch"
-in-toto-record start --step-name create_branch --key $private_key --materials $project_name
+in-toto-record start -n create_branch -k $private_key
 pushd $project_name > /dev/null
 git checkout -b version_update_branch
 popd > /dev/null
-in-toto-record stop --step-name create_branch --key $private_key --products $project_name
+in-toto-record stop -n create_branch -k $private_key
 
 echo "4) Update Cargo.toml version using cargo-bump"
 pushd $project_name > /dev/null
 cargo install -q cargo-bump > /dev/null
 popd > /dev/null
-in-toto-record start --step-name update-version --key $private_key --materials ${project_name}/Cargo.toml ${project_name}/Cargo.lock
+in-toto-record start -n update-version -k $private_key --base-path=$project_name --materials Cargo.toml Cargo.lock
 ## Just updating the patch version while testing this out
 pushd $project_name > /dev/null
 cargo bump patch
@@ -39,12 +40,13 @@ cargo build -q
 git add Cargo.toml Cargo.lock 2> /dev/null
 git ci -S -m "Bumped version"
 popd > /dev/null
-in-toto-record stop --step-name update-version --key $private_key --products ${project_name}/Cargo.toml ${project_name}/Cargo.lock
+in-toto-record stop -n update-version -k $private_key --base-path $project_name --products Cargo.toml Cargo.lock
 
 echo "5) Run tests"
 cargo test -q --manifest-path=${project_name}/Cargo.toml --no-run
-in-toto-run --step-name run_tests -k $private_key -- cargo test --manifest-path ${project_name}/Cargo.toml
+in-toto-run -n run_tests -s -k $private_key -- cargo test --manifest-path ${project_name}/Cargo.toml
+
+echo "6) Copy artifacts"
+cp *.link $private_key ${key_name}.pub ../
 
 popd > /dev/null
-
-echo "Generated artifacts in $workdir"
