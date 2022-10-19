@@ -5,8 +5,8 @@ from in_toto.models.layout import Layout
 from in_toto.models.metadata import Metablock
 
 def main():
-  key_sscs_private = interface.import_rsa_privatekey_from_file("sscs-tool")
-  key_sscs_public = interface.import_rsa_publickey_from_file("sscs-tool.pub")
+  key_sscs_private = interface.import_rsa_privatekey_from_file("artifacts/sscs-tool")
+  key_sscs_public = interface.import_rsa_publickey_from_file("artifacts/sscs-tool.pub")
 
   layout = Layout.read({
       "_type": "layout",
@@ -39,7 +39,8 @@ def main():
               ["MODIFY", "Cargo.toml"],
               ["ALLOW", "Cargo.lock"],
               ["ALLOW", "sscs-tool.pub"],
-              ["ALLOW", "sscs-layout.json"],
+              ["ALLOW", "sscs-tool"],
+              ["ALLOW", "root.layout"],
               ["DISALLOW", "*"]],
           "pubkeys": [key_sscs_public["keyid"]],
           "expected_command": [],
@@ -51,7 +52,8 @@ def main():
               ["MATCH", "embedded-tls/*", "WITH", "PRODUCTS", "FROM", "clone_project"],
               ["ALLOW", "embedded-tls/target"],
               ["ALLOW", "sscs-tool.pub"],
-              ["ALLOW", "sscs-layout.json"],
+              ["ALLOW", "sscs-tool"],
+              ["ALLOW", "root.layout"],
               ["DISALLOW", "*"],
           ],
           "expected_products": [
@@ -59,7 +61,8 @@ def main():
               ["MATCH", "*", "WITH", "PRODUCTS", "FROM", "clone_project"],
               ["ALLOW", "embedded-tls/target"],
               ["ALLOW", "sscs-tool.pub"],
-              ["ALLOW", "sscs-layout.json"],
+              ["ALLOW", "sscs-tool"],
+              ["ALLOW", "root-layout"],
           ],
           "run": [
               "git",
@@ -71,9 +74,9 @@ def main():
 
   metadata = Metablock(signed=layout)
 
-  print("Created sscs-layout.json file")
+  print("Created artifacts/root.layout file")
   metadata.sign(key_sscs_private)
-  metadata.dump("sscs-layout.json")
+  metadata.dump("artifacts/root.layout")
 
 if __name__ == '__main__':
   main()

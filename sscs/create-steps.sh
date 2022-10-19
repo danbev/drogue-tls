@@ -58,7 +58,7 @@ in-toto-run -n run_tests -s -k $private_key -- cargo test \
 
 echo "6) Copy artifacts"
 printf "Copying the following link files to artifacts directory:\n`ls *.link`\n"
-cp *.link ${key_name}.pub ../artifacts
+cp *.link $private_key $key_name.pub ../artifacts
 
 popd > /dev/null
 
