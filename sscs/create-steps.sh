@@ -8,6 +8,9 @@ github_url=https://github.com/$github_user/${project_name}.git
 workdir=work
 
 ## Create a work directory for all artifacts
+mkdir -p artifacts > /dev/null
+
+## Create a work/tmp directory
 rm -rf $workdir
 mkdir $workdir
 pushd $workdir > /dev/null
@@ -54,6 +57,9 @@ in-toto-run -n run_tests -s -k $private_key -- cargo test \
 	--manifest-path ${project_name}/Cargo.toml
 
 echo "6) Copy artifacts"
-cp *.link $private_key ${key_name}.pub ../
+cp *.link $private_key ${key_name}.pub ../artifacts
 
 popd > /dev/null
+
+# remove the work directory
+rm -rf $workdir
