@@ -3,6 +3,7 @@
 from securesystemslib import interface
 from in_toto.models.layout import Layout
 from in_toto.models.metadata import Metablock
+import os
 
 def main():
   key_sscs_private = interface.import_rsa_privatekey_from_file("artifacts/sscs-tool")
@@ -77,6 +78,9 @@ def main():
   print("Created artifacts/root.layout file")
   metadata.sign(key_sscs_private)
   metadata.dump("artifacts/root.layout")
+
+  ## The private key is only used by the signing and should be deleted
+  os.remove("artifacts/sscs-tool")
 
 if __name__ == '__main__':
   main()
