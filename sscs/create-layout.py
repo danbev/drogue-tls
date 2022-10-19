@@ -40,7 +40,6 @@ def main():
               ["MODIFY", "Cargo.toml"],
               ["ALLOW", "Cargo.lock"],
               ["ALLOW", "sscs-tool.pub"],
-              ["ALLOW", "sscs-tool"],
               ["ALLOW", "root.layout"],
               ["DISALLOW", "*"]],
           "pubkeys": [key_sscs_public["keyid"]],
@@ -53,7 +52,6 @@ def main():
               ["MATCH", "embedded-tls/*", "WITH", "PRODUCTS", "FROM", "clone_project"],
               ["ALLOW", "embedded-tls/target"],
               ["ALLOW", "sscs-tool.pub"],
-              ["ALLOW", "sscs-tool"],
               ["ALLOW", "root.layout"],
               ["DISALLOW", "*"],
           ],
@@ -62,7 +60,6 @@ def main():
               ["MATCH", "*", "WITH", "PRODUCTS", "FROM", "clone_project"],
               ["ALLOW", "embedded-tls/target"],
               ["ALLOW", "sscs-tool.pub"],
-              ["ALLOW", "sscs-tool"],
               ["ALLOW", "root-layout"],
           ],
           "run": [
